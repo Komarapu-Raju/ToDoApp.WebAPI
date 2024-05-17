@@ -48,12 +48,12 @@ namespace ToDoApp.WebAPI.Controllers
         {
             toDo.CreatedOn = DateTime.Now;
             toDo.UpdatedOn = DateTime.Now;
-            var todo = await this._ToDoDbContext.ToDos.AddAsync(toDo);
+            await this._ToDoDbContext.ToDos.AddAsync(toDo);
             await this._ToDoDbContext.SaveChangesAsync();
-            return Ok(todo);
+            return Ok();
         }
 
-        [HttpPut("update")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateToDo(int  id, ToDo toDo)
         {
             var exisitingToDo = await this._ToDoDbContext.ToDos.FindAsync(id);
@@ -71,7 +71,7 @@ namespace ToDoApp.WebAPI.Controllers
             return Ok(toDo);
         }
 
-        [HttpPut("update/status")]
+        [HttpPut("update/status/{id}")]
         public async Task<IActionResult> UpdateToDoStatus(int id)
         {
             var existingToDo = await this._ToDoDbContext.ToDos.FindAsync(id);
@@ -83,12 +83,13 @@ namespace ToDoApp.WebAPI.Controllers
 
             existingToDo.IsCompleted = !existingToDo.IsCompleted;
             existingToDo.CompletedOn = existingToDo.IsCompleted ? DateTime.Now : null;
+            existingToDo.UpdatedOn = DateTime.Now;
             await this._ToDoDbContext.SaveChangesAsync();
 
             return Ok(existingToDo);
         }
 
-        [HttpPut("undodeletedtodo")]
+        [HttpPut("undodeletedtodo/{id}")]
         public async Task<IActionResult> UndoDeletedToDo(int id)
         {
             var deletedToDo = await this._ToDoDbContext.ToDos.FindAsync(id);
@@ -105,7 +106,7 @@ namespace ToDoApp.WebAPI.Controllers
             return Ok(deletedToDo);
         }
 
-        [HttpDelete]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteToDo(int id)
         {
             var existingToDo = await this._ToDoDbContext.ToDos.FindAsync(id);
